@@ -1,0 +1,141 @@
+function loginFb() {
+	FB.login(function(response) {
+		checkLoginState();
+	}, {
+		scope : 'public_profile,email'
+	});
+}
+
+
+
+// This function is called when someone finishes with the Login
+// Button. See the onlogin handler attached to it in the sample
+// code below.
+function checkLoginState() {
+	FB.getLoginStatus(function(response) {
+		statusChangeCallback(response);
+	});
+}
+
+
+
+
+// This is called with the results from from FB.getLoginStatus().
+function statusChangeCallback(response) {
+	// console.log('statusChangeCallback');
+	// console.log(response);
+	// The response object is returned with a status field that lets the
+	// app know the current login status of the person.
+	// Full docs on the response object can be found in the documentation
+	// for FB.getLoginStatus().
+	if (response.status === 'connected') {
+		// Logged into your app and Facebook.
+		testAPI();
+	} else if (response.status === 'not_authorized') {
+		// The person is logged into Facebook, but not your app.
+		// document.getElementById('status').innerHTML = 'Please log ' +
+		// 'into this app.';
+		// console.log("not login");
+	} else {
+		// The person is not logged into Facebook, so we're not sure if
+		// they are logged into this app or not.
+		// document.getElementById('status').innerHTML = 'Please log ' +
+		// 'into Facebook.';
+		// console.log("not using app");
+	}
+}
+
+
+function testAPI() {
+	FB.api('/me', 'GET', {
+		fields : 'email,id,name'
+	}, function(response) {
+		insertUsrFb(response.email, response.name, response.id);
+	});
+}
+
+
+function insertUsrFb(email, name, id) {
+	$.post("getFacebookUser",{
+		idFacebookUser : id
+	},function(data) {
+		if (data) {
+			var user = JSON.parse(data).getFacebookUser;
+			if (user.userName == id) {
+				if (user.contactName != name) {
+					updateFacebookUser(name, id);
+				}
+			} else {
+				if (email) {
+					addNewFacebookUser(email, name, id);
+				} else {
+					addNewFacebookUser("", name, id);
+				}
+			}
+			$.post("getFacebookUser",{
+				idFacebookUser : id
+			},function(data) {
+				if (data) {
+					var user = JSON.parse(data).getFacebookUser;
+					$(".login_label").text(
+							user.contactName);
+				}
+			});
+				$(".register-before-login").hide();
+				$(".register-after-login").show();
+			} 
+		else {
+			$('#loginMess').html(
+				"<div class='alert alert-danger' role='alert'>"
+				+ " Cannot login Facebook in this times! Please try again later. "
+				+ "</div>");
+			}
+		});
+}
+
+
+
+
+function updateFacebookUser(email, name, id) {
+	$.post("updateFacebookUser", {
+		email : email,
+		contact_name : name,
+		idFacebookUser : id
+	}, function(data) {
+		if (data) {
+			var result = JSON.parse(data).updateFacebookUser;
+			if (result) {
+				afterLoginFacebook();
+			}
+		}
+	});
+}
+
+
+
+function addNewFacebookUser(useremail, username, userid) {
+	$.post("addNewFacebookUser", {
+		email : useremail,
+		contact_name : username,
+		idFacebookUser : userid
+	}, function(data) {
+		if (data) {
+			var result = JSON.parse(data).addNewFacebookUser;
+			if (result) {
+				afterLoginFacebook();
+			}
+		}
+	});
+}
+
+
+// Load the SDK asynchronously
+(function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id))
+		return;
+	js = d.createElement(s);
+	js.id = id;
+	js.src = "//connect.facebook.net/en_US/sdk.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));

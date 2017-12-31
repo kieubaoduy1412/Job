@@ -1,0 +1,12 @@
+.animation-block{
+	width: 50px;
+	height: 50px;
+	margin-top:20px;
+	background-color: red;
+}
+
+.fixed{
+	position: fixed;
+	left: 20px;
+}
+

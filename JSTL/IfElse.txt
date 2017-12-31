@@ -1,0 +1,8 @@
+<c:if test="${cityCombobox[location - 1].localtionName!=null}">
+	${cityCombobox[location - 1].localtionName} 
+</c:if> 
+<c:if test="${cityCombobox[location - 1].localtionName==null}">
+	All
+</c:if> 
+
+Facility: ${fn:length(Search_Data)}

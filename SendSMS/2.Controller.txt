@@ -1,0 +1,20 @@
+public boolean sendSMSFromService(String toPhone) {
+        boolean blResult = false;
+        String msg = Constants.SMS_BOOKING_SUCCESS;
+        TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
+        // Build a filter for the MessageList
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair(Constants.NOTIFICATION_BODY, msg));
+        params.add(new BasicNameValuePair(Constants.NOTIFICATION_TO, toPhone));
+        params.add(new BasicNameValuePair(Constants.NOTIFICATION_FROM,
+                Constants.NOTIFICATION_FROM_PHONE_NUMBER));
+        MessageFactory messageFactory = client.getAccount().getMessageFactory();
+        // send SMS
+        try {
+            Message message = messageFactory.create(params);
+            blResult = true;
+        } catch (TwilioRestException e) {
+            LOG.error("TwilioRestException", e);
+        }
+        return blResult;
+    }

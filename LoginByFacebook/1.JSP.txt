@@ -1,0 +1,1 @@
+<a href="#" onclick="loginFb()">Login by <i class="fa fa-facebook"></i></a>

@@ -1,0 +1,4 @@
+$.post("sms", {
+	phone : phonenum
+	}, function(data) {
+});

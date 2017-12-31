@@ -1,0 +1,16 @@
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img {
+		height: 600px;
+		width: 100%;
+      margin: auto;
+}
+.carousel-inner{
+  	width: 100%;
+  	height: 600px;
+}
+.carousel-indicators .active{
+	width: 25px;
+	height: 5px;
+	margin: 1px;
+	background-color: white;
+}
